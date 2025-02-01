@@ -93,9 +93,12 @@
   </a>
 
   <button onclick="startScan()">Scan Barcode</button>
+  <button onclick="cancelScan()">Cancel Scan</button>
   <video id="video"></video>
 
   <script>
+    let videoStream;
+
     function addToCart(product) {
       var cart = document.getElementById('cart');
       var listItem = document.createElement('li');
@@ -118,6 +121,7 @@
 
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(function(stream) {
+          videoStream = stream;
           video.srcObject = stream;
           video.setAttribute('playsinline', true); // required to tell iOS safari we don't want fullscreen
           video.play();
@@ -125,6 +129,14 @@
         .catch(function(err) {
           console.error(err);
         });
+    }
+
+    function cancelScan() {
+      var video = document.getElementById('video');
+      video.style.display = 'none';
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+      }
     }
   </script>
 </body>
